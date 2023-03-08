@@ -32,7 +32,19 @@ router.post('/', async (req, res) => {
 });
 
 // Post Multiple TODOs
-router.post('/all', async (req, res) => {});
+router.post('/all', async (req, res) => {
+    await Todo.insertMany(req.body)
+        .then(() => {
+            res.status(200).json({
+                message: 'Todo created successfully!',
+            });
+        })
+        .catch(() => {
+            res.status(500).json({
+                err: 'Something is wrong on server side!',
+            });
+        });
+});
 
 // Put a TODO
 router.put('/:id', async (req, res) => {});
