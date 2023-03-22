@@ -48,8 +48,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // Post a TODO
-router.post('/', async (req, res) => {
-    const newTodo = new Todo(req.body);
+router.post('/', checkLogin, async (req, res) => {
+    const newTodo = new Todo({
+        ...req.body,
+        user: req.userId
+    });
     await newTodo
         .save()
         .then(() => {
