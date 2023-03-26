@@ -24,9 +24,9 @@ const userSchema = mongoose.Schema({
     todos: [
         {
             type: mongoose.Types.ObjectId,
-            ref: "Todo"
-        }
-    ]
+            ref: 'Todo',
+        },
+    ],
 });
 
 module.exports = userSchema;

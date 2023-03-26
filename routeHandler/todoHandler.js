@@ -5,15 +5,17 @@ const checkLogin = require('../middlewares/checkLogin');
 const router = express.Router();
 
 const todoSchema = require('../schemas/todoSchema');
+const userSchema = require('../schemas/userSchema');
 
 // Create a model
 const Todo = new mongoose.model('Todo', todoSchema);
+const User = new mongoose.model('User', userSchema);
 
 // Get all TODOs
 router.get('/', checkLogin, async (req, res) => {
     // console.log(req.username);
     await Todo.find()
-        .populate("user", "name username")
+        .populate('user', 'name username')
         .select({
             _id: 0,
             __v: 0,
@@ -52,10 +54,19 @@ router.get('/:id', async (req, res) => {
 router.post('/', checkLogin, async (req, res) => {
     const newTodo = new Todo({
         ...req.body,
-        user: req.userId
+        user: req.userId,
     });
-    await newTodo
-        .save()
+    const todo = await newTodo.save();
+    await User.updateOne(
+        {
+            _id: req.userId,
+        },
+        {
+            $push: {
+                todos: todo._id,
+            },
+        },
+    )
         .then(() => {
             res.status(200).json({
                 message: 'Todo created successfully!',
