@@ -38,23 +38,26 @@ router.post('/login', async (req, res) => {
             username: req.body.username
         });
         if(user && user.length > 0){
-            const isValidPassword = await bcrypt.compare(req.body.password, user[0].password);
-            if(isValidPassword){
-                // Generate token
-                const token = jwt.sign({
-                    username: user[0].username,
-                    userId: user[0]._id
-                }, process.env.JWT_SECRET, {
-                    expiresIn: '1h'
-                });
-                res.status(200).json({
-                    "access_token": token,
-                    "message": "Login successfull!"
-                });
-            }else{
-                res.status(401).json({
-                    "error": "Authentication failed!"
-                })
+            for (let index = 0; index < user.length; index++) {
+                let myuser = user[index];
+                if(await bcrypt.compare(req.body.password, myuser.password)){
+                    // Generate token
+                    const token = jwt.sign({
+                        username: myuser.username,
+                        userId: myuser._id
+                    }, process.env.JWT_SECRET, {
+                        expiresIn: '1h'
+                    });
+                    res.status(200).json({
+                        "access_token": token,
+                        "user": myuser.username,
+                        "message": "Login successfull!"
+                    });
+                }else{
+                    res.status(401).json({
+                        "error": "Authentication failed!"
+                    })
+                }
             }
         }else{
             res.status(401).json({

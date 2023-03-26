@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
@@ -10,6 +11,7 @@ const userHandler = require('./routeHandler/userHandler');
 const app = express();
 dotenv.config();
 app.use(express.json());
+app.use(cors());
 
 // Database connect with mongoose
 const username = 'shamsulhuda';

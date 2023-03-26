@@ -12,7 +12,8 @@ const Todo = new mongoose.model('Todo', todoSchema);
 // Get all TODOs
 router.get('/', checkLogin, async (req, res) => {
     // console.log(req.username);
-    await Todo.find({ status: 'inactive' })
+    await Todo.find()
+        .populate("user", "name username")
         .select({
             _id: 0,
             __v: 0,
